@@ -19,7 +19,7 @@ public class Sender {
         this.gson=new GsonBuilder().setPrettyPrinting().create();
     }
     public void send(update u){
-        this.simp.convertAndSend("/sim/update", (gson.toJson(u)));
-        // convertAndSend("/sim/update", u);
+        this.simp.convertAndSend("/sim/update",u);
+        // this.simp.convertAndSend("/sim/update", (gson.toJson(u)));
     }
 }
