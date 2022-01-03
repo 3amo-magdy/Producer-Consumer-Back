@@ -83,7 +83,11 @@ public class controller {
     }
     @GetMapping("/linkQM/{idq}/{idm}")
     public String linkQM(@PathVariable String idq,@PathVariable String idm){
-        this.simulator.linkProvider(UUID.fromString(idm),UUID.fromString(idq));
+        try{this.simulator.linkProvider(UUID.fromString(idm),UUID.fromString(idq));
+        }
+        catch (Error e){
+            return gson.toJson("F");
+        }
         return gson.toJson("S");
     }
     @GetMapping("/linkMQ/{idm}/{idq}")

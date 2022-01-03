@@ -119,6 +119,9 @@ public class Simulator {
     public void linkProvider(UUID M_id,UUID Q_id){
         M m=getService(M_id);
         Q q=getQueue(Q_id);
+        if(m.getConsumer()==q){
+            throw new Error();
+        }
         m.addObserver(q);
     }
     public void delinkProvider(UUID M_id,UUID Q_id){
@@ -128,10 +131,10 @@ public class Simulator {
     }
     public void setConsumer(UUID M_id,UUID Q_id){
         M m=getService(M_id);
-        if(m.hasConsumer()){
+        Q q=getQueue(Q_id);
+        if(m.hasConsumer()||m.hasProvider(q)){
             throw new Error();
         }
-        Q q=getQueue(Q_id);
         m.setConsumer(q);
     }
     public void removeConsumer(UUID M_id){

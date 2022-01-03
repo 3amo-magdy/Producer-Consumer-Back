@@ -50,8 +50,14 @@ public class M implements IObservable,Runnable{
     public boolean hasConsumer(){
         return (this.consumer!=null);
     }
+    public boolean hasProvider(IObserver o){
+        return (this.providers.contains(o));
+    }
     public void setConsumer(IObserver o){
         this.consumer=o;
+    }
+    public IObserver getConsumer(){
+        return this.consumer;
     }
     public void removeConsumer(){
         this.consumer=null;
