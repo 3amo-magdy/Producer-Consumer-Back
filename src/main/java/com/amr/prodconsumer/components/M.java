@@ -56,7 +56,6 @@ public class M implements IObservable,Runnable{
         paused=false;
         this.setId(id);
         this.pauseTime=0;
-
     }
     public boolean hasConsumer(){
         return (this.consumer!=null);
