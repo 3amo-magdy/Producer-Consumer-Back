@@ -19,8 +19,8 @@ public class ProdconsumerApplication {
 		SpringApplication.run(ProdconsumerApplication.class, args);
 		// Simulator s= new Simulator();
 		// Q q1 = s.addQueue();
-		// Q q2=s.addQueue();
-		// M m1= s.addService(2000);
+		// Q q2=  s.addQueue();
+		// M m1=  s.addService();
 		// s.linkProvider(m1.getId(), q1.getId());
 		// s.setConsumer(m1.getId(),q2.getId());
 		// s.setInputQueue(q1.getId());

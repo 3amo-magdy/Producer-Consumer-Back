@@ -32,12 +32,14 @@ public class M implements IObservable,Runnable{
     public M(tracker t,UUID id){
         this.providers=new ArrayList<IObserver>();
         this.tracker=t;
-        this.time=Double.doubleToLongBits(Math.random()*8000);
+        this.time=Math.round(Math.random()*10000);
+        System.out.println("M's time :"+time);
         this.restTime=300;
         this.pauseTime=0;
         free=true;
         on=true;
         paused=false;
+        this.pauseTime=0;
         this.setId(id);
     }
     public UUID getId() {
@@ -47,15 +49,15 @@ public class M implements IObservable,Runnable{
         this.id = id;
     }
     public M(tracker t, long duration,UUID id){
-        this.tracker=t;
         this.providers=new ArrayList<IObserver>();
+        this.tracker=t;
         this.time=duration;
         this.restTime=300;
         free=true;
         on=true;
         paused=false;
-        this.setId(id);
         this.pauseTime=0;
+        this.setId(id);
     }
     public boolean hasConsumer(){
         return (this.consumer!=null);
@@ -102,14 +104,13 @@ public class M implements IObservable,Runnable{
             if(free){
                     if(Clock.systemDefaultZone().millis()-timeStamp>this.restTime){
                         Object res = notifyObservers();
-                        if(res==null){
-                            continue;
+                        if(res != null){    
+                            update newUp=new update(((UUID)res).toString(),this.id.toString(),-1,false);
+                            this.tracker.update(newUp);
+                            timeStamp=Clock.systemDefaultZone().millis();
+                            System.out.println("lol");
+                            this.free=false;
                         }
-                        update newUp=new update(((UUID)res).toString(),this.id.toString(),-1,false);
-                        this.tracker.update(newUp);
-                        timeStamp=Clock.systemDefaultZone().millis();
-                        System.out.println("lol");
-                        this.free=false;
                 }
             }
             else{
@@ -137,8 +138,8 @@ public class M implements IObservable,Runnable{
                 //  Handle Other responses types when added in the future.
             }
         }
+        //if all providers were out of products
         return null;
-        
     }
 
     public Object notifyObserver(IObserver o) throws InvalidClassException {

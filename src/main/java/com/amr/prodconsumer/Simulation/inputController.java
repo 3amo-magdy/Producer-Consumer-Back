@@ -20,6 +20,7 @@ public class inputController extends Thread{
     }
 
     public void setInputRate(int rate){
+        System.out.println("input rate set to : "+rate);
         this.rate=rate;
     }
     public void setq0(Q q0){
@@ -32,13 +33,14 @@ public class inputController extends Thread{
     public void run() {
         Long last = Clock.systemDefaultZone().millis();
         while(running){
-            if(Clock.systemDefaultZone().millis()-last>60000){
+            if(Clock.systemDefaultZone().millis()-last>1000){
                 this.feedQ(q0, rate);
+                System.out.println("just fed q0");
+                last=Clock.systemDefaultZone().millis();
             }
         }
     }
     public void feedQ(Q q,int amount){
         q.addProducts(amount);
     }
-    
 }
