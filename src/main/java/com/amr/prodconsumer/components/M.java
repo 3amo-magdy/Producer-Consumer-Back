@@ -25,7 +25,10 @@ public class M implements IObservable,Runnable{
 
     private long time;
     private long restTime;
+    private long pauseTimeStamp;
+    private long pauseTime;
     private boolean free;
+    private boolean paused;
     private UUID id;
 
     public M(tracker t,UUID id){
@@ -35,6 +38,7 @@ public class M implements IObservable,Runnable{
         this.restTime=300;
         free=true;
         on=true;
+        paused=false;
         this.setId(id);
     }
     public UUID getId() {
@@ -50,6 +54,7 @@ public class M implements IObservable,Runnable{
         this.restTime=300;
         free=true;
         on=true;
+        paused=false;
         this.setId(id);
     }
     public boolean hasConsumer(){
@@ -81,6 +86,14 @@ public class M implements IObservable,Runnable{
     public boolean isFree(){
         return this.free;
     }
+    public void pause(){
+        this.paused=true;
+        this.pauseTimeStamp=Clock.systemDefaultZone().millis();
+    }
+    public void resume(){
+        this.paused=false;
+        this.pauseTime=Clock.systemDefaultZone().millis()-pauseTimeStamp;
+    }
     @Override
     public void run() {
         long timeStamp;
@@ -101,15 +114,15 @@ public class M implements IObservable,Runnable{
                 }
             }
             else{
-                if(Clock.systemDefaultZone().millis()-timeStamp>this.time){
+                if(!paused&&Clock.systemDefaultZone().millis()-timeStamp>this.time+this.pauseTime){
                     this.sendProduct();
                     update newUp2=new update((((Q)this.consumer).getId()).toString(),this.id.toString(),+1,true);
                     this.tracker.update(newUp2);
                     System.out.println(tracker.history.toString());
                     this.free=true;
                     timeStamp=Clock.systemDefaultZone().millis();
+                    this.pauseTime=0;
                 }
-
             }
         }
     }

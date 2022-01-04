@@ -77,7 +77,7 @@ public class Simulator {
     }
     public boolean removeService(UUID id){
         for (M m : services) {
-            if(m.getId()==id){
+            if(m.getId().toString().equals(id.toString())){
                 services.remove(m);
                 return true;
             }
@@ -86,15 +86,18 @@ public class Simulator {
     }
     public M getService(UUID id){
         for (M m : services) {
-            if(m.getId()==id){
+            if(m.getId().toString().equals(id.toString())){
                 return m;
+            }
+            else{
+                System.out.println(m.getId());
             }
         }
         return null;
     }
     public boolean removeQueue(UUID id){
         for (Q q : queues) {
-            if(q.getId()==id){
+            if(q.getId().toString().equals(id.toString())){
                 queues.remove(q);
                 return true;
             }
@@ -103,7 +106,7 @@ public class Simulator {
     }
     public Q getQueue(UUID id){
         for (Q q : queues) {
-            if(q.getId()==id){
+            if(q.getId().toString().equals(id.toString())){
                 return q;
             }
         }
@@ -119,6 +122,8 @@ public class Simulator {
     public void linkProvider(UUID M_id,UUID Q_id){
         M m=getService(M_id);
         Q q=getQueue(Q_id);
+        System.out.println(m);
+        System.out.println(q);
         if(m.getConsumer()==q){
             throw new Error();
         }
@@ -153,6 +158,28 @@ public class Simulator {
             thread.start();
         }
         simulating=true;
+    }
+    public void stopSimulating(){
+        simulating=false;
+        for(M m:services){
+            m.turnOff();
+        }
+        inputController.turnOff();
+        tracker.turnOff();
+    }
+    public void pauseSimulating(){
+        for(M m:services){
+            m.pause();
+        }
+    }
+    public void resumeSimulating(){
+        for(M m:services){
+            m.resume();
+        }
+    }
+    public void setQ0(String idq) {
+        Q q0= getQueue(UUID.fromString(idq));
+        this.inputController.setq0(q0);
     }
 
 }

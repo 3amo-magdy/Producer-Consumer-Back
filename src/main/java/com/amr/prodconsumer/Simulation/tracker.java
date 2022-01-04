@@ -20,6 +20,7 @@ public class tracker extends Thread{
     @Autowired
     Sender sender;
     long timeStamp;
+    boolean on;
     
     @Autowired
     public tracker(){
@@ -27,6 +28,7 @@ public class tracker extends Thread{
         this.updateQueue=new LinkedList<update>();
         this.history=new Stack<update>();
         this.timeStamp=Clock.systemDefaultZone().millis();
+        this.on=true;
     }
     
     // public tracker() {
@@ -47,11 +49,14 @@ public class tracker extends Thread{
     public boolean hasUpdated(){
         return this.hasNew;
     }
+    public void turnOff(){
+        this.on =false;
+    }
 
     @Override
     public void run() {
         long time=Clock.systemDefaultZone().millis();
-        while(true){
+        while(on){
             if(!updateQueue.isEmpty()){
                 if(Clock.systemDefaultZone().millis()-time>20){
                     update u = this.updateQueue.poll();

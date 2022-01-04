@@ -63,6 +63,38 @@ public class controller {
     //     }
     // }
 
+    @GetMapping("/start")
+    public String start(){
+        this.simulator.startSimulating();
+        return gson.toJson("S");
+    }
+    @GetMapping("/input/{inputRate}")
+    public String startWithRate(@PathVariable int inputRate){
+        this.simulator.setInputRate(inputRate);
+        this.simulator.startSimulating();
+        return gson.toJson("S");
+    }
+    @GetMapping("/input/{idq}/q0")
+    public String setq0(@PathVariable String idq ){
+        this.simulator.setQ0(idq);
+        this.simulator.startSimulating();
+        return gson.toJson("S");
+    }
+    @GetMapping("/pause")
+    public String pause(){
+        this.simulator.pauseSimulating();
+        return gson.toJson("S");
+    }
+    @GetMapping("/resume")
+    public String resume(){
+        this.simulator.resumeSimulating();
+        return gson.toJson("S");
+    }
+    @GetMapping("/stop")
+    public String stop(){
+        this.simulator.stopSimulating();
+        return gson.toJson("S");
+    }
     @GetMapping("/addQ")
     public String addQ(){
         return gson.toJson(this.simulator.addQueue());
@@ -83,6 +115,8 @@ public class controller {
     }
     @GetMapping("/linkQM/{idq}/{idm}")
     public String linkQM(@PathVariable String idq,@PathVariable String idm){
+        System.out.println(idq);
+        System.out.println(idm);
         try{this.simulator.linkProvider(UUID.fromString(idm),UUID.fromString(idq));
         }
         catch (Error e){
@@ -91,7 +125,7 @@ public class controller {
         return gson.toJson("S");
     }
     @GetMapping("/linkMQ/{idm}/{idq}")
-    public String linkMQ(@PathVariable String idq,@PathVariable String idm){
+    public String linkMQ(@PathVariable String idm,@PathVariable String idq){
         try{this.simulator.setConsumer(UUID.fromString(idm),UUID.fromString(idq));}
         catch(Error e){
             return gson.toJson("F");
