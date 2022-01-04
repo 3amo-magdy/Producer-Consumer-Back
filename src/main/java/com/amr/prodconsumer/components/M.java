@@ -34,6 +34,7 @@ public class M implements IObservable,Runnable{
         this.tracker=t;
         this.time=Double.doubleToLongBits(Math.random()*8000);
         this.restTime=300;
+        this.pauseTime=0;
         free=true;
         on=true;
         paused=false;
@@ -54,6 +55,8 @@ public class M implements IObservable,Runnable{
         on=true;
         paused=false;
         this.setId(id);
+        this.pauseTime=0;
+
     }
     public boolean hasConsumer(){
         return (this.consumer!=null);
