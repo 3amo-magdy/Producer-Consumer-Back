@@ -80,6 +80,11 @@ public class controller {
         this.simulator.setQ0(idq);
         return gson.toJson("S");
     }
+    @GetMapping("/input/{idq}/{input}")
+    public String inputProducts(@PathVariable String idq,@PathVariable int input ){
+        this.simulator.inputProducts(idq, input);
+        return gson.toJson("S");
+    }
     @GetMapping("/pause")
     public String pause(){
         this.simulator.pauseSimulating();

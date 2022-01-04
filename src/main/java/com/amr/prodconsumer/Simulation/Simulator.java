@@ -123,6 +123,10 @@ public class Simulator {
     public void setInputRate(int rate){
         this.inputController.setInputRate(rate);
     }
+    public void inputProducts(String Q_id,int amount){
+        Q q=getQueue(UUID.fromString(Q_id));
+        this.inputController.feedQ(q, amount);
+    }
     public void setInputQueue(UUID id){
         Q q=getQueue(id);
         this.inputController.setq0(q);

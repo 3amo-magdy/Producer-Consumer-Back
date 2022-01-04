@@ -1,5 +1,6 @@
 package com.amr.prodconsumer.components;
 
+import java.time.Clock;
 import java.util.UUID;
 
 import com.amr.prodconsumer.observing.IObserver;
@@ -7,10 +8,17 @@ import com.amr.prodconsumer.observing.IObserver;
 public class Q implements IObserver{
     private int number;
     private UUID id;
-    
+    private Long served;
+
     public Q(UUID id){
         this.setId(id);
         this.number=0;
+        this.served= -40L;
+    }
+    public Q(int n,UUID id){
+        this.setId(id);
+        this.number=n;
+        this.served= -40L;
     }
     public UUID getId() {
         return id;
@@ -18,21 +26,21 @@ public class Q implements IObserver{
     public void setId(UUID id) {
         this.id = id;
     }
-    public Q(int n,UUID id){
-        this.setId(id);
-        this.number=n;
-    }
     
     public boolean isEmpty(){
-        return (this.number==0);
+        return (this.number<=0);
     }
 
     @Override
-    public Object react1() {
+    synchronized public Object react1() {
+        if(!(Clock.systemDefaultZone().millis()-served>40)){
+            return null;
+        }
         if(this.isEmpty()){
             return null;
         }
         this.sendProduct();
+        this.served=Clock.systemDefaultZone().millis();
         return this.id;
     }
 
