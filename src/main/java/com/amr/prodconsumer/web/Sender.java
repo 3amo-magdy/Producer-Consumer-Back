@@ -23,7 +23,7 @@ public class Sender {
     public void send(update u){
         System.out.println("sending update ..");
         // this.simp.convertAndSend("/sim/update",u);
-        GsonMessageConverter mc = new GsonMessageConverter();
+        GsonMessageConverter mc = new GsonMessageConverter(gson);
         this.simp.setMessageConverter(mc);
         this.simp.convertAndSend("/sim/update", u);
     }

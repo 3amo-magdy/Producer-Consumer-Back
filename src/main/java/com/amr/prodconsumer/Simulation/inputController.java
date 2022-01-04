@@ -4,19 +4,24 @@ import java.time.Clock;
 import java.util.Date;
 
 import com.amr.prodconsumer.components.Q;
+import com.amr.prodconsumer.web.update;
 
 public class inputController extends Thread{
     int rate;
     Q q0;
     boolean running;
+    private tracker tracker;
+
     
-    public inputController(){
+    public inputController(tracker t){
+        this.tracker=t;
         running =true;
     }
-    public inputController(int ProductsPerMinute,Q q){
+    public inputController(int ProductsPerMinute,Q q,tracker t){
         this.rate=ProductsPerMinute;
         this.q0=q;
         running =true;
+        this.tracker=t;
     }
 
     public void setInputRate(int rate){
@@ -42,5 +47,7 @@ public class inputController extends Thread{
     }
     public void feedQ(Q q,int amount){
         q.addProducts(amount);
+        update newUp=new update(q.getId().toString(),"input",amount,false);
+        this.tracker.update(newUp);
     }
 }

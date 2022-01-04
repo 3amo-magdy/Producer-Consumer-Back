@@ -33,8 +33,8 @@ public class Simulator {
         queues=new ArrayList<Q>();
         SThreads=new ArrayList<Thread>();
         ids= new ArrayList<UUID>();
-        this.inputController=new inputController();
         this.tracker=new tracker(SMTemplate);
+        this.inputController=new inputController(this.tracker);
         simulating=false;
     }
     public boolean isSimulating() {
