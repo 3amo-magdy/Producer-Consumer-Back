@@ -1,6 +1,7 @@
 package com.amr.prodconsumer.components;
 
 import java.io.InvalidClassException;
+import java.time.Clock;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -29,7 +30,7 @@ public class M implements IObservable,Runnable{
     public M(tracker t,UUID id){
         this.providers=new ArrayList<IObserver>();
         this.tracker=t;
-        this.time=Double.doubleToLongBits(Math.random()*20);
+        this.time=Double.doubleToLongBits(Math.random()*2000);
         free=true;
         on=true;
         this.setId(id);
@@ -41,6 +42,7 @@ public class M implements IObservable,Runnable{
         this.id = id;
     }
     public M(tracker t, long duration,UUID id){
+        this.tracker=t;
         this.providers=new ArrayList<IObserver>();
         this.time=duration;
         free=true;
@@ -63,12 +65,10 @@ public class M implements IObservable,Runnable{
         this.consumer=null;
     }
     
-    @Override
     public void addObserver(IObserver o) {
         this.providers.add(o);
     }
     
-    @Override
     public void removeObserver(IObserver o) {
         this.providers.remove(o);        
     }
@@ -80,26 +80,32 @@ public class M implements IObservable,Runnable{
     }
     @Override
     public void run() {
+        long timeStamp;
+        timeStamp=Clock.systemDefaultZone().millis();
         while(on){
-            Object res = notifyObservers();
-            if(res!=null){
-                this.free=false;
+            if(free){
+                Object res = notifyObservers();
+                if(res==null){
+                    System.out.println("Machine "+this.id+" is waiting");
+                    continue;
+                }
                 update newUp=new update(((UUID)res).toString(),this.id.toString(),-1,false);
                 this.tracker.update(newUp);
-                try {
-                    wait(this.time);
-                } catch (InterruptedException e) {
-                    System.out.println(e.getMessage());
-                }
-                this.sendProduct();
-                update newUp2=new update((((Q)this.consumer).getId()).toString(),this.id.toString(),+1,true);
-                this.tracker.update(newUp2);
-                this.free=true;
-
+                timeStamp=Clock.systemDefaultZone().millis();
+                System.out.println("lol");
+                this.free=false;
             }
-            else if(!isFree()){
-                //if all providers were out of products.
-                this.free=true;
+            else{
+                // System.out.println("Machine "+this.id+" is working ");
+
+                if(Clock.systemDefaultZone().millis()-timeStamp>this.time){
+                    this.sendProduct();
+                    update newUp2=new update((((Q)this.consumer).getId()).toString(),this.id.toString(),+1,true);
+                    this.tracker.update(newUp2);
+                    System.out.println(tracker.history.toString());
+                    this.free=true;
+                }
+
             }
         }
     }
@@ -121,10 +127,11 @@ public class M implements IObservable,Runnable{
 
     public Object notifyObserver(IObserver o) throws InvalidClassException {
         Object response =o.react1();
-        if(response!=null&&response instanceof Boolean){
+        if(response == null || response instanceof UUID){
             return response;
         }
         else{
+            System.out.println(response);
             throw new InvalidClassException(response.getClass().toString()+" Is Not Supported As A Response Type");
         }
     }

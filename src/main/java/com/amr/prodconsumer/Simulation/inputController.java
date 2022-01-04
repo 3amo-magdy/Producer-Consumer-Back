@@ -1,5 +1,6 @@
 package com.amr.prodconsumer.Simulation;
 
+import java.time.Clock;
 import java.util.Date;
 
 import com.amr.prodconsumer.components.Q;
@@ -29,9 +30,9 @@ public class inputController extends Thread{
     }
     @Override
     public void run() {
-        Long last = new Date().getTime();
+        Long last = Clock.systemDefaultZone().millis();
         while(running){
-            if((new Date().getTime()-last)>60000){
+            if(Clock.systemDefaultZone().millis()-last>1000){
                 this.feedQ(q0, rate);
             }
         }

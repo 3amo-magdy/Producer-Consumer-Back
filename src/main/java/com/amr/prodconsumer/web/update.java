@@ -11,5 +11,9 @@ public class update {
         this.qnumber = qnumber;
         this.mfree = mfree;
     }
+    public String toString(){
+        return("Q : " + this.idQ +"  "+ this.qnumber+"\n"+
+               "M : " + this.idM +"  "+ this.mfree);
+    }
     
 }
