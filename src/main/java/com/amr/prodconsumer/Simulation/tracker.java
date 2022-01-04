@@ -11,24 +11,29 @@ import com.amr.prodconsumer.web.update;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+
 
 @Component
-public class tracker extends Thread{
+public class tracker {
     boolean hasNew;
-    Queue<update> updateQueue;
+    LinkedList<update> updateQueue;
     public Stack<update> history;
+    long timeStamp;
+    long time;
+    boolean on=true;
+
     @Autowired
     Sender sender;
-    long timeStamp;
-    boolean on;
     
     @Autowired
-    public tracker(){
+    public tracker(SimpMessagingTemplate SMTemplate){
+        this.on=true;
         this.hasNew=false;
         this.updateQueue=new LinkedList<update>();
         this.history=new Stack<update>();
         this.timeStamp=Clock.systemDefaultZone().millis();
-        this.on=true;
+        this.sender=new Sender(SMTemplate);
     }
     
     // public tracker() {
@@ -38,8 +43,23 @@ public class tracker extends Thread{
         newUp.time(Clock.systemDefaultZone().millis()-timeStamp);
         System.out.println(newUp.toString());
         this.hasNew=true;
-        updateQueue.add(newUp);
+        // this.updateQueue.add(newUp);
+        // System.out.println("added an update to the trackerqueue");
+        // System.out.println(this.updateQueue.size());
         this.timeStamp=Clock.systemDefaultZone().millis();
+        System.out.println("tracker has an update");
+        // this.time=Clock.systemDefaultZone().millis();
+        // update u;
+        // u = this.updateQueue.removeFirst();
+        history.push(newUp);
+        // if(Clock.systemDefaultZone().millis()-time>20){
+        // System.out.println("tracker sending update -----");
+        // System.out.println("the update is -----");
+        // System.out.println(u.toString());
+        // System.out.println("---------------------------");
+        // time=Clock.systemDefaultZone().millis();
+        // }
+        this.sender.send(newUp);                    
     }
 
     public void reset(){
@@ -53,20 +73,31 @@ public class tracker extends Thread{
         this.on =false;
     }
 
-    @Override
-    public void run() {
-        long time=Clock.systemDefaultZone().millis();
-        while(on){
-            if(!updateQueue.isEmpty()){
-                if(Clock.systemDefaultZone().millis()-time>20){
-                    update u = this.updateQueue.poll();
-                    history.push(u);
-                    // System.out.println(history.toString());
-                    this.sender.send(u);                    
-                    time=Clock.systemDefaultZone().millis();
-                }
-            }
-        }
-    }
+    // @Override
+    // public void run() {
+    //     System.out.println("tracker started");
+    //     long time=Clock.systemDefaultZone().millis();
+    //     update u;
+    //     while(this.on){
+    //         if(this.updateQueue.size()!=0){
+    //             System.out.println("queue has something");
+    //             u = this.updateQueue.removeFirst();
+    //             history.push(u);
+
+    //             if(Clock.systemDefaultZone().millis()-time>20){
+    //                 System.out.println("tracker sending update -----");
+    //                 System.out.println("the update is -----");
+    //                 System.out.println(u.toString());
+    //                 System.out.println("---------------------------");
+    //                 this.sender.send(u);                    
+    //                 time=Clock.systemDefaultZone().millis();
+    //             }
+    //         }
+    //         else{
+    //             continue;
+    //         }
+    //     }
+    //     System.out.println("TRACKER CLOSED !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    // }
     
 }

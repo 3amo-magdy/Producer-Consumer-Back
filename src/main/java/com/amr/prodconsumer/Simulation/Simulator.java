@@ -8,6 +8,8 @@ import com.amr.prodconsumer.components.Q;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+
 
 @Component
 public class Simulator {
@@ -26,13 +28,13 @@ public class Simulator {
     private boolean simulating; 
     
     @Autowired
-    public Simulator(){
+    public Simulator(SimpMessagingTemplate SMTemplate){
         services=new ArrayList<M>();
         queues=new ArrayList<Q>();
         SThreads=new ArrayList<Thread>();
         ids= new ArrayList<UUID>();
         this.inputController=new inputController();
-        this.tracker=new tracker();
+        this.tracker=new tracker(SMTemplate);
         simulating=false;
     }
     public boolean isSimulating() {
@@ -154,7 +156,6 @@ public class Simulator {
     }
     
     public void startSimulating(){
-        tracker.start();
         inputController.start();
         for(M m:services){
             Thread thread = new Thread(m);
@@ -163,6 +164,7 @@ public class Simulator {
         for (Thread thread:SThreads) {
             thread.start();
         }
+        // tracker.start();
         simulating=true;
     }
     public void stopSimulating(){

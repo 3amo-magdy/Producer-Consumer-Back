@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+
 
 @RestController
 @RequestMapping("/sim")
@@ -48,9 +50,9 @@ public class controller {
             return (arg0.getAnnotation(ExcludefromIn.class)!=null);
         }   
     };
-
-    public controller(){
-        this.simulator=new Simulator();
+    @Autowired
+    public controller(SimpMessagingTemplate simp){
+        this.simulator=new Simulator( simp);
         builder=new GsonBuilder();
         builder.addSerializationExclusionStrategy(Outstrat).addDeserializationExclusionStrategy(Instrat);
         builder.setPrettyPrinting();

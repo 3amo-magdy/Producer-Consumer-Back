@@ -6,10 +6,12 @@ import com.google.gson.GsonBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.converter.GsonMessageConverter;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
 public class Sender {
     private Gson gson;
     private SimpMessagingTemplate simp;
@@ -19,7 +21,10 @@ public class Sender {
         this.gson=new GsonBuilder().setPrettyPrinting().create();
     }
     public void send(update u){
-        this.simp.convertAndSend("/sim/update",u);
-        // this.simp.convertAndSend("/sim/update", (gson.toJson(u)));
+        System.out.println("sending update ..");
+        // this.simp.convertAndSend("/sim/update",u);
+        GsonMessageConverter mc = new GsonMessageConverter();
+        this.simp.setMessageConverter(mc);
+        this.simp.convertAndSend("/sim/update", u);
     }
 }
