@@ -24,13 +24,15 @@ public class M implements IObservable,Runnable{
 
 
     private long time;
+    private long restTime;
     private boolean free;
     private UUID id;
 
     public M(tracker t,UUID id){
         this.providers=new ArrayList<IObserver>();
         this.tracker=t;
-        this.time=Double.doubleToLongBits(Math.random()*2000);
+        this.time=Double.doubleToLongBits(Math.random()*8000);
+        this.restTime=300;
         free=true;
         on=true;
         this.setId(id);
@@ -45,6 +47,7 @@ public class M implements IObservable,Runnable{
         this.tracker=t;
         this.providers=new ArrayList<IObserver>();
         this.time=duration;
+        this.restTime=300;
         free=true;
         on=true;
         this.setId(id);
@@ -84,26 +87,27 @@ public class M implements IObservable,Runnable{
         timeStamp=Clock.systemDefaultZone().millis();
         while(on){
             if(free){
-                Object res = notifyObservers();
-                if(res==null){
-                    System.out.println("Machine "+this.id+" is waiting");
-                    continue;
+                    if(Clock.systemDefaultZone().millis()-timeStamp>this.restTime){
+                        Object res = notifyObservers();
+                        if(res==null){
+                            System.out.println("Machine "+this.id+" is waiting");
+                            continue;
+                        }
+                        update newUp=new update(((UUID)res).toString(),this.id.toString(),-1,false);
+                        this.tracker.update(newUp);
+                        timeStamp=Clock.systemDefaultZone().millis();
+                        System.out.println("lol");
+                        this.free=false;
                 }
-                update newUp=new update(((UUID)res).toString(),this.id.toString(),-1,false);
-                this.tracker.update(newUp);
-                timeStamp=Clock.systemDefaultZone().millis();
-                System.out.println("lol");
-                this.free=false;
             }
             else{
-                // System.out.println("Machine "+this.id+" is working ");
-
                 if(Clock.systemDefaultZone().millis()-timeStamp>this.time){
                     this.sendProduct();
                     update newUp2=new update((((Q)this.consumer).getId()).toString(),this.id.toString(),+1,true);
                     this.tracker.update(newUp2);
                     System.out.println(tracker.history.toString());
                     this.free=true;
+                    timeStamp=Clock.systemDefaultZone().millis();
                 }
 
             }

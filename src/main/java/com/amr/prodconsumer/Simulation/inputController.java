@@ -32,7 +32,7 @@ public class inputController extends Thread{
     public void run() {
         Long last = Clock.systemDefaultZone().millis();
         while(running){
-            if(Clock.systemDefaultZone().millis()-last>1000){
+            if(Clock.systemDefaultZone().millis()-last>60000){
                 this.feedQ(q0, rate);
             }
         }
