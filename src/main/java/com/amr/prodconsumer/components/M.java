@@ -13,9 +13,7 @@ import com.amr.prodconsumer.web.GsonStrats.*;
 
 public class M implements IObservable,Runnable{
     // the queues that provide M with products
-    @ExcludefromOut
     private ArrayList<IObserver> providers;
-    @ExcludefromOut
     private IObserver consumer;
     @ExcludefromOut
     private tracker tracker;
@@ -103,7 +101,6 @@ public class M implements IObservable,Runnable{
                     if(Clock.systemDefaultZone().millis()-timeStamp>this.restTime){
                         Object res = notifyObservers();
                         if(res==null){
-                            System.out.println("Machine "+this.id+" is waiting");
                             continue;
                         }
                         update newUp=new update(((UUID)res).toString(),this.id.toString(),-1,false);

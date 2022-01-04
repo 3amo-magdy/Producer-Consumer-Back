@@ -66,18 +66,16 @@ public class controller {
     @GetMapping("/start")
     public String start(){
         this.simulator.startSimulating();
-        return gson.toJson("S");
+        return gson.toJson(this.simulator.getServices());
     }
     @GetMapping("/input/{inputRate}")
     public String startWithRate(@PathVariable int inputRate){
         this.simulator.setInputRate(inputRate);
-        this.simulator.startSimulating();
         return gson.toJson("S");
     }
     @GetMapping("/input/{idq}/q0")
     public String setq0(@PathVariable String idq ){
         this.simulator.setQ0(idq);
-        this.simulator.startSimulating();
         return gson.toJson("S");
     }
     @GetMapping("/pause")

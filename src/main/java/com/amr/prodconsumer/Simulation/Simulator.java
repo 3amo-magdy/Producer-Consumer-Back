@@ -12,6 +12,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class Simulator {
     private ArrayList<M> services;
+    public ArrayList<M> getServices() {
+        return services;
+    }
+    public void setServices(ArrayList<M> services) {
+        this.services = services;
+    }
     private ArrayList<Thread> SThreads;
     private ArrayList<Q> queues;
     private ArrayList<UUID> ids;
