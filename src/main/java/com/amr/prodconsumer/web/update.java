@@ -30,7 +30,7 @@ public class update {
     public String toString(){
         return("timestamp : "+this.duration+"\n"+
                "Q : " + this.idQ +"  "+ this.qnumber+"\n"+
-               "M : " + this.idM +"  "+ this.mfree+" color ="+mColor+"\n" );
+               "M : " + this.idM +"  "+ this.mfree+"color: "+mColor+"\n" );
     }
     
 }

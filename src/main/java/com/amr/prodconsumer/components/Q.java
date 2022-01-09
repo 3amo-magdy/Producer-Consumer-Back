@@ -82,9 +82,10 @@ public class Q implements IObserver{
     public String sendProduct(){
         this.number--;
         String color=null;
+        System.out.println(number);
         if(colors.size()>0){
         color=colors.remove(0);
-    }
+        }
         return color;
     }
     public void addProduct(String color){

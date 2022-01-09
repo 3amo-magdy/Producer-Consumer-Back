@@ -26,6 +26,8 @@ public class Simulator {
     private inputController inputController;
     private tracker tracker;
     private boolean simulating; 
+    private boolean pause; 
+
     
     @Autowired
     public Simulator(SimpMessagingTemplate SMTemplate){
@@ -52,6 +54,16 @@ public class Simulator {
         ids.add(id);
         System.out.println("initing new M :");
         M m=new M(tracker,id);
+        
+        if(simulating){
+            Thread thread = new Thread(m);
+            this.SThreads.add(thread);
+            thread.start();
+            if(pause){
+                m.pause();
+            }
+        }
+        System.out.println(id.toString());
         services.add(m);
         System.out.println("added and returning M :");
         return m;
@@ -63,7 +75,9 @@ public class Simulator {
         }
         while(ids.contains(id));
         ids.add(id);
+
         M m=new M(tracker,time,id);
+
         services.add(m);
         return m;
     }
@@ -183,14 +197,18 @@ public class Simulator {
         tracker.turnOff();
     }
     public void pauseSimulating(){
+        pause=true;
         for(M m:services){
             m.pause();
         }
     }
     public void resumeSimulating(){
+        if(!pause)
+            return;
         for(M m:services){
             m.resume();
         }
+        pause=false;
     }
     public void setQ0(String idq) {
         Q q0= getQueue(UUID.fromString(idq));

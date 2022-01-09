@@ -120,7 +120,11 @@ public class M implements IObservable,Runnable{
             }
             else{
                 if(!paused&&Clock.systemDefaultZone().millis()-timeStamp>this.time+this.pauseTime){
+                    if(!hasConsumer()){
+                        continue;
+                    }
                     this.sendProduct();
+
                     update newUp2=new update((((Q)this.consumer).getId()).toString(),this.id.toString(),+1,true,currentColor);
                     this.tracker.update(newUp2);
                     System.out.println(tracker.history.toString());
