@@ -68,7 +68,7 @@ public class controller {
     @GetMapping("/start")
     public String start(){
         this.simulator.startSimulating();
-        return gson.toJson(this.simulator.getServices());
+        return gson.toJson("hi");
     }
     @GetMapping("/input/{inputRate}")
     public String startWithRate(@PathVariable int inputRate){
@@ -102,11 +102,11 @@ public class controller {
     }
     @GetMapping("/addQ")
     public String addQ(){
-        return gson.toJson(this.simulator.addQueue());
+        return gson.toJson(this.simulator.addQueue().getId());
     }
     @GetMapping("/addM")
     public String addM(){
-        return gson.toJson(this.simulator.addService());
+        return gson.toJson(this.simulator.addService().getId());
     }
     @DeleteMapping("/removeQ/{id}")
     public String removeQ(@PathVariable String id){

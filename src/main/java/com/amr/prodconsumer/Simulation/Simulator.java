@@ -160,7 +160,10 @@ public class Simulator {
     }
     
     public void startSimulating(){
-        inputController.start();
+        // inputController.start();
+        if(simulating){
+            return;
+        }
         for(M m:services){
             Thread thread = new Thread(m);
             this.SThreads.add(thread);
