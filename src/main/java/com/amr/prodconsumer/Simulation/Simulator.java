@@ -38,6 +38,7 @@ public class Simulator {
         this.tracker=new tracker(SMTemplate);
         this.inputController=new inputController(this.tracker);
         simulating=false;
+        pause=false;
     }
     public boolean isSimulating() {
         return simulating;
@@ -118,13 +119,25 @@ public class Simulator {
         return null;
     }
     public boolean removeQueue(UUID id){
+        if(simulating||pause){
+            return false;
+        }
+        System.out.println(simulating);
+        System.out.println(pause);
+        boolean flag=false;
         for (Q q : queues) {
             if(q.getId().toString().equals(id.toString())){
                 queues.remove(q);
-                return true;
+                flag=true;
             }
         }
-        return false;
+        for(M m:services){
+            if(((Q)m.getConsumer()).getId().toString().equals(id.toString())){
+                m.removeConsumer();
+                flag=true;
+            }
+        }
+        return false|flag;
     }
     public Q getQueue(UUID id){
         for (Q q : queues) {
