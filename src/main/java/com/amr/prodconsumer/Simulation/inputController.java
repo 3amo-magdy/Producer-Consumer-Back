@@ -2,6 +2,7 @@ package com.amr.prodconsumer.Simulation;
 
 import java.time.Clock;
 import java.util.Date;
+import java.util.List;
 
 import com.amr.prodconsumer.components.Q;
 import com.amr.prodconsumer.web.update;
@@ -11,8 +12,6 @@ public class inputController extends Thread{
     Q q0;
     boolean running;
     private tracker tracker;
-
-    
     public inputController(tracker t){
         this.tracker=t;
         running =true;

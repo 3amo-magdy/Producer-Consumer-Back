@@ -20,7 +20,7 @@ public class M implements IObservable,Runnable{
     @ExcludefromOut
     private boolean on;
 
-
+    String currentColor;
     private long time;
     private long restTime;
     private long pauseTimeStamp;
@@ -32,7 +32,8 @@ public class M implements IObservable,Runnable{
     public M(tracker t,UUID id){
         this.providers=new ArrayList<IObserver>();
         this.tracker=t;
-        this.time=Math.round(Math.random()*10000);
+        this.time=Math.round(Math.random()*1000+500);
+        
         System.out.println("M's time :"+time);
         this.restTime=300;
         this.pauseTime=0;
@@ -40,6 +41,7 @@ public class M implements IObservable,Runnable{
         on=true;
         paused=false;
         this.pauseTime=0;
+        currentColor="rgb(0,128,0)";
         this.setId(id);
     }
     public UUID getId() {
@@ -103,20 +105,23 @@ public class M implements IObservable,Runnable{
         while(on){
             if(free){
                     if(Clock.systemDefaultZone().millis()-timeStamp>this.restTime){
-                        Object res = notifyObservers();
-                        if(res != null){    
-                            update newUp=new update(((UUID)res).toString(),this.id.toString(),-1,false);
+                        ArrayList<Object> res = notifyObservers();
+                        if(res != null){
+                            currentColor=(String)res.get(1);
+                            System.out.println(currentColor);   
+                            update newUp=new update(((UUID)(res.get(0))).toString(),this.id.toString(),-1,false,currentColor);
                             this.tracker.update(newUp);
                             timeStamp=Clock.systemDefaultZone().millis();
                             System.out.println("lol");
                             this.free=false;
+                        
                         }
                 }
             }
             else{
                 if(!paused&&Clock.systemDefaultZone().millis()-timeStamp>this.time+this.pauseTime){
                     this.sendProduct();
-                    update newUp2=new update((((Q)this.consumer).getId()).toString(),this.id.toString(),+1,true);
+                    update newUp2=new update((((Q)this.consumer).getId()).toString(),this.id.toString(),+1,true,currentColor);
                     this.tracker.update(newUp2);
                     System.out.println(tracker.history.toString());
                     this.free=true;
@@ -127,10 +132,10 @@ public class M implements IObservable,Runnable{
         }
     }
     @Override
-    public Object notifyObservers() {
+    public  ArrayList< Object> notifyObservers() {
         for (IObserver o : providers) {
             try {
-                Object id_q=notifyObserver(o);
+                ArrayList< Object> id_q=notifyObserver(o);
                 if(id_q!=null){
                     return id_q;
                 }
@@ -142,9 +147,9 @@ public class M implements IObservable,Runnable{
         return null;
     }
 
-    public Object notifyObserver(IObserver o) throws InvalidClassException {
-        Object response =o.react1();
-        if(response == null || response instanceof UUID){
+    public ArrayList< Object> notifyObserver(IObserver o) throws InvalidClassException {
+        ArrayList< Object> response =o.react1();
+        if(response == null || response.get(0) instanceof UUID){
             return response;
         }
         else{
@@ -154,7 +159,7 @@ public class M implements IObservable,Runnable{
     }
 
     public void sendProduct(){
-        this.consumer.react2();
+        this.consumer.react2(currentColor);
     }
     public long getTime() {
         return time;

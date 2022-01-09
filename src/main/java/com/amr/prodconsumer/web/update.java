@@ -8,6 +8,15 @@ public class update {
     int qnumber;
     boolean mfree;
     long duration;
+    String mColor;
+    public update(String idQ, String idM, int qnumber, boolean mfree,String mC) {
+        this.idQ = idQ;
+        this.idM = idM;
+        this.qnumber = qnumber;
+        this.mfree = mfree;
+        this.duration=Clock.systemDefaultZone().millis();
+        this.mColor=mC;
+    }
     public update(String idQ, String idM, int qnumber, boolean mfree) {
         this.idQ = idQ;
         this.idM = idM;
@@ -21,7 +30,7 @@ public class update {
     public String toString(){
         return("timestamp : "+this.duration+"\n"+
                "Q : " + this.idQ +"  "+ this.qnumber+"\n"+
-               "M : " + this.idM +"  "+ this.mfree+"\n");
+               "M : " + this.idM +"  "+ this.mfree+" color ="+mColor+"\n" );
     }
     
 }
