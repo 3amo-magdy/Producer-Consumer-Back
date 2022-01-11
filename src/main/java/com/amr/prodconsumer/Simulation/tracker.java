@@ -72,6 +72,9 @@ public class tracker {
     public void turnOff(){
         this.on =false;
     }
+    void incrementTimeStamp(long time){
+        timeStamp+=time;
+    }
     void setTimeStamp(long time){
         timeStamp=time;
     }

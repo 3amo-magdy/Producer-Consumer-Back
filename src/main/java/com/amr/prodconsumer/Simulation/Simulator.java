@@ -40,6 +40,7 @@ public class Simulator {
         queues=new ArrayList<Q>();
         SThreads=new ArrayList<Thread>();
         ids= new ArrayList<UUID>();
+        System.out.println(SMTemplate.getMessageChannel().toString());
         this.tracker=new tracker(SMTemplate);
         this.inputController=new inputController(this.tracker);
         simulating=false;
@@ -50,6 +51,26 @@ public class Simulator {
     }
     public Stack<update>replay(){
         return tracker.getHistory();
+    }
+    public Stack<update>replayO(){
+        Stack<update> answer=new Stack<>();
+        int n=tracker.getHistory().size();
+        if(n<2)return null;
+     
+        String wantReplayMachine=((update)(tracker.getHistory().get(n-1))).getIdM();
+        int i;
+        for(i=n-2;i>=0;i--){
+            if((((update)(tracker.getHistory().get(i))).getIdM()).equals(wantReplayMachine)){
+                break;
+            }
+            else if((((update)(tracker.getHistory().get(i))).getIdM()).equals("before")){
+                return tracker.getHistory();
+            }
+        }
+        for(;i<n;i++){
+            answer.push(((update)(tracker.getHistory().get(i))));
+        }
+        return answer;
     }
     public M addService(){
         System.out.println("adding service:");
@@ -75,6 +96,12 @@ public class Simulator {
         services.add(m);
         System.out.println("added and returning M :");
         return m;
+    }
+    public boolean stopRate(){
+        return this.inputController.pause();
+    }
+    public boolean conRate(){
+        return this.inputController.cont();
     }
     public M addService(long time){
         UUID id;
@@ -193,11 +220,17 @@ public class Simulator {
         m.removeConsumer();
     }
     
-    public void startSimulating(){
-        // inputController.start();
+    public String startSimulating(){
+
         if(simulating){
-            return;
+            return "Running";
         }
+        for(M m:services){
+           if( !m.hasConsumer()){
+            return "cant start";
+           }
+        }
+        inputController.start();
         tracker.setTimeStamp(Clock.systemDefaultZone().millis());
         for(Q q:queues){
             tracker.update(new update(q.getId().toString(), "before", q.getNumber(), false));
@@ -211,6 +244,7 @@ public class Simulator {
         }
         // tracker.start();
         simulating=true;
+        return "Started";
     }
     public void stopSimulating(){
         simulating=false;
@@ -223,6 +257,7 @@ public class Simulator {
     public void pauseSimulating(){
         pause=true;
         pauseSt=Clock.systemDefaultZone().millis();
+        this.inputController.pause();
         for(M m:services){
             m.pause();
         }
@@ -233,7 +268,7 @@ public class Simulator {
         pauseTotal=Clock.systemDefaultZone().millis()-pauseSt;
         // update u=tracker.getHistory().get(tracker.getHistory().size()-1);
         // u.time(pauseTotal-u.getDuration());
-        tracker.setTimeStamp(Clock.systemDefaultZone().millis());
+        tracker.incrementTimeStamp(pauseTotal);
         for(M m:services){
             m.resume();
         }

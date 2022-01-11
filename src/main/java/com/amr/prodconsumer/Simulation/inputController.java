@@ -12,6 +12,7 @@ public class inputController extends Thread{
     Q q0;
     boolean running;
     private tracker tracker;
+    private boolean pause;
     public inputController(tracker t){
         this.tracker=t;
         running =true;
@@ -36,13 +37,23 @@ public class inputController extends Thread{
     @Override
     public void run() {
         Long last = Clock.systemDefaultZone().millis();
+        this.feedQ(q0, rate);
         while(running){
-            if(Clock.systemDefaultZone().millis()-last>60000){
+            if(!pause){
+            if(Clock.systemDefaultZone().millis()-last>1000){
                 this.feedQ(q0, rate);
                 System.out.println("just fed q0");
                 last=Clock.systemDefaultZone().millis();
-            }
+            }}
         }
+    }
+    public boolean pause(){
+        this.pause=true;
+        return pause;
+    }
+    public boolean cont(){
+        this.pause=false;
+        return pause;
     }
     public void feedQ(Q q,int amount){
         q.addProducts(amount);

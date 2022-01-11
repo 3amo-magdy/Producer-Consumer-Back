@@ -50,6 +50,7 @@ public class controller {
             return (arg0.getAnnotation(ExcludefromIn.class)!=null);
         }   
     };
+    SimpMessagingTemplate simp;
     @Autowired
     public controller(SimpMessagingTemplate simp){
         this.simulator=new Simulator( simp);
@@ -57,6 +58,7 @@ public class controller {
         builder.addSerializationExclusionStrategy(Outstrat).addDeserializationExclusionStrategy(Instrat);
         builder.setPrettyPrinting();
         gson=builder.create();
+        this.simp=simp;
     }
     // @GetMapping
     // public String update(){
@@ -67,8 +69,7 @@ public class controller {
 
     @GetMapping("/start")
     public String start(){
-        this.simulator.startSimulating();
-        return gson.toJson("hi");
+        return gson.toJson(this.simulator.startSimulating());
     }
     @GetMapping("/input/{inputRate}")
     public String startWithRate(@PathVariable int inputRate){
@@ -150,5 +151,19 @@ public class controller {
     @GetMapping("/replay")
     public String replay(){
         return gson.toJson(this.simulator.replay());
+    }
+    @GetMapping("/new")
+    public String newS(){
+        this.simulator.stopSimulating();
+        this.simulator =new Simulator(simp);
+        return gson.toJson(this.simulator.getServices().size());
+    }
+    @GetMapping("/stopRate")
+    public String stopRate(){
+        return gson.toJson(this.simulator.stopRate());
+    }
+    @GetMapping("/conRate")
+    public String conRate(){
+        return gson.toJson(this.simulator.conRate());
     }
 }

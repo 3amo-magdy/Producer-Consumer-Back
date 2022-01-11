@@ -37,6 +37,9 @@ public class update {
     public long getDuration(){
         return this.duration;
     }
+    public String getIdM(){
+        return idM;
+    }
     public String toString(){
         return("timestamp : "+this.duration+"\n"+
                "Q : " + this.idQ +"  "+ this.qnumber+"\n"+
