@@ -147,12 +147,8 @@ public class controller {
         this.simulator.delinkProvider(UUID.fromString(idm),UUID.fromString(idq));
         return gson.toJson("S");
     }
-    // @DeleteMapping("/delink/{id}")
-    // public String removeQ(@PathVariable String id){
-    //     this.simulator.removeQueue(UUID.fromString(id))
-    //     return gson.toJson("S");
-    // }
-    
-
-
+    @GetMapping("/replay")
+    public String replay(){
+        return gson.toJson(this.simulator.replay());
+    }
 }

@@ -108,13 +108,14 @@ public class M implements IObservable,Runnable{
                         ArrayList<Object> res = notifyObservers();
                         if(res != null){
                             currentColor=(String)res.get(1);
+                           int total =(int)res.get(2);
+                            System.out.println(total);
                             System.out.println(currentColor);   
-                            update newUp=new update(((UUID)(res.get(0))).toString(),this.id.toString(),-1,false,currentColor);
+                            update newUp=new update(((UUID)(res.get(0))).toString(),this.id.toString(),-1,false,currentColor,total);
                             this.tracker.update(newUp);
                             timeStamp=Clock.systemDefaultZone().millis();
                             System.out.println("lol");
                             this.free=false;
-                        
                         }
                 }
             }
@@ -123,11 +124,10 @@ public class M implements IObservable,Runnable{
                     if(!hasConsumer()){
                         continue;
                     }
-                    this.sendProduct();
-
-                    update newUp2=new update((((Q)this.consumer).getId()).toString(),this.id.toString(),+1,true,currentColor);
+                    int number=this.sendProduct();
+                    update newUp2=new update((((Q)this.consumer).getId()).toString(),this.id.toString(),+1,true,currentColor,number);
                     this.tracker.update(newUp2);
-                    System.out.println(tracker.history.toString());
+                    System.out.println(tracker.getHistory().toString());
                     this.free=true;
                     timeStamp=Clock.systemDefaultZone().millis();
                     this.pauseTime=0;
@@ -162,8 +162,9 @@ public class M implements IObservable,Runnable{
         }
     }
 
-    public void sendProduct(){
-        this.consumer.react2(currentColor);
+    public int sendProduct(){
+        int number =(int) this.consumer.react2(currentColor);
+        return number;
     }
     public long getTime() {
         return time;

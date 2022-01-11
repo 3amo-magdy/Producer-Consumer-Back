@@ -49,6 +49,8 @@ public class Q implements IObserver{
         ArrayList<Object> ar=new ArrayList<>();
         ar.add(this.id);
         ar.add(color);
+        ar.add(number);
+        System.out.println(ar.toString());
         return  ar;
     }
     public List<String> getColors() {
@@ -76,9 +78,11 @@ public class Q implements IObserver{
     @Override
     public Object react2(String color) {
         this.addProduct(color);
-        return true;
+        return this.number;
     }
-
+    public int getNumber(){
+        return number;
+    }
     public String sendProduct(){
         this.number--;
         String color=null;

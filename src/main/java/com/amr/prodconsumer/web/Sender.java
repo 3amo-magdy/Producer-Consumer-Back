@@ -1,5 +1,8 @@
 package com.amr.prodconsumer.web;
 
+import java.util.Stack;
+
+import com.amr.prodconsumer.Simulation.tracker;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -27,4 +30,12 @@ public class Sender {
         this.simp.setMessageConverter(mc);
         this.simp.convertAndSend("/sim/update", u);
     }
+    // public void send(Stack<update> history){
+    //     System.out.println("sending update ..");
+    //     // this.simp.convertAndSend("/sim/update",u);
+    //     GsonMessageConverter mc = new GsonMessageConverter(gson);
+    //     this.simp.setMessageConverter(mc);
+    //     this.simp.convertAndSend("/sim/update", u);
+    // }
+
 }

@@ -18,9 +18,8 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 public class tracker {
     boolean hasNew;
     LinkedList<update> updateQueue;
-    public Stack<update> history;
-    long timeStamp;
-    long time;
+    private Stack<update> history;
+    private long timeStamp;
     boolean on=true;
 
     @Autowired
@@ -38,7 +37,9 @@ public class tracker {
     
     // public tracker() {
 	// }
-
+    public Stack<update> getHistory(){
+        return this.history;
+    }
 	public void update(update newUp) {
         newUp.time(Clock.systemDefaultZone().millis()-timeStamp);
         System.out.println(newUp.toString());
@@ -61,7 +62,6 @@ public class tracker {
         // }
         this.sender.send(newUp);                    
     }
-
     public void reset(){
         this.hasNew=false;
     }
@@ -72,7 +72,12 @@ public class tracker {
     public void turnOff(){
         this.on =false;
     }
-
+    void setTimeStamp(long time){
+        timeStamp=time;
+    }
+    long getTimeStamp(){
+        return timeStamp;
+    }
     // @Override
     // public void run() {
     //     System.out.println("tracker started");

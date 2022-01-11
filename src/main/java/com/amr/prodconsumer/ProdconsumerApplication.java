@@ -24,7 +24,7 @@ public class ProdconsumerApplication {
 		// s.linkProvider(m1.getId(), q1.getId());
 		// s.setConsumer(m1.getId(),q2.getId());
 		// s.setInputQueue(q1.getId());
-		// s.setInputRate(10);
+		// s.setInputRate(10);l
 		// s.startSimulating();
 
 

@@ -1,10 +1,13 @@
 package com.amr.prodconsumer.Simulation;
 
+import java.time.Clock;
 import java.util.ArrayList;
+import java.util.Stack;
 import java.util.UUID;
 
 import com.amr.prodconsumer.components.M;
 import com.amr.prodconsumer.components.Q;
+import com.amr.prodconsumer.web.update;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -26,7 +29,9 @@ public class Simulator {
     private inputController inputController;
     private tracker tracker;
     private boolean simulating; 
-    private boolean pause; 
+    private boolean pause;
+    private long pauseSt;
+    private long pauseTotal;
 
     
     @Autowired
@@ -43,7 +48,9 @@ public class Simulator {
     public boolean isSimulating() {
         return simulating;
     }
-    
+    public Stack<update>replay(){
+        return tracker.getHistory();
+    }
     public M addService(){
         System.out.println("adding service:");
         
@@ -191,6 +198,10 @@ public class Simulator {
         if(simulating){
             return;
         }
+        tracker.setTimeStamp(Clock.systemDefaultZone().millis());
+        for(Q q:queues){
+            tracker.update(new update(q.getId().toString(), "before", q.getNumber(), false));
+        }
         for(M m:services){
             Thread thread = new Thread(m);
             this.SThreads.add(thread);
@@ -211,6 +222,7 @@ public class Simulator {
     }
     public void pauseSimulating(){
         pause=true;
+        pauseSt=Clock.systemDefaultZone().millis();
         for(M m:services){
             m.pause();
         }
@@ -218,6 +230,10 @@ public class Simulator {
     public void resumeSimulating(){
         if(!pause)
             return;
+        pauseTotal=Clock.systemDefaultZone().millis()-pauseSt;
+        // update u=tracker.getHistory().get(tracker.getHistory().size()-1);
+        // u.time(pauseTotal-u.getDuration());
+        tracker.setTimeStamp(Clock.systemDefaultZone().millis());
         for(M m:services){
             m.resume();
         }

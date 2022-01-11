@@ -46,7 +46,8 @@ public class inputController extends Thread{
     }
     public void feedQ(Q q,int amount){
         q.addProducts(amount);
-        update newUp=new update(q.getId().toString(),"input",amount,false);
-        this.tracker.update(newUp);
+        update newUp=new update(q.getId().toString(),"input",q.getNumber(),false);
+        this.tracker.sender.send(newUp);
+        // this.tracker.update(newUp);
     }
 }
